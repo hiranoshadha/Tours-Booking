@@ -1,0 +1,117 @@
+@import "tailwindcss";
+.logo-container2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px; /* Adjust based on your logo size */
+    width: 200px;  /* Adjust based on your logo size */
+    position: relative;
+    
+  }
+  
+  /* Style the video */
+  .logo-video {
+    width: 100%;   /* Makes the video fill the container */
+    height: 100%;  /* Makes the video fill the container */
+    object-fit: cover; /* Ensures the video covers the entire container */
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5); /* Optional: makes it circular */
+  }
+/* Positioning and visibility for the star element */
+.star-animation-left,
+.star-animation-right {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(0, 217, 255, 0.884);
+  border-radius: 50%;
+  opacity: 0; /* Initially hidden */
+  pointer-events: none;
+  animation: none; /* No animation on page load */
+  transition: opacity 0.3s ease;
+}
+
+/* Hover effect on button triggers animation */
+button:hover .star-animation-left,
+button:hover .star-animation-right {
+  opacity: 1;
+  animation: star-sparkle 1.5s infinite ease-in-out; /* Trigger animation on hover */
+}
+
+/* Keyframe animation for the star sparkle effect */
+@keyframes star-sparkle {
+  0% {
+    transform: scale(0) translate(0, 0);
+    opacity: 0;
+  }
+  25% {
+    transform: scale(1.5) translate(5px, 5px);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.5;
+  }
+  75% {
+    transform: scale(1.5) translate(-5px, -5px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) translate(0, 0);
+    opacity: 0;
+  }
+}
+
+/* Left star position */
+.star-animation-left {
+  top: 0;
+  left: 0;
+  animation-delay: 0.5s; /* Slight delay for effect */
+}
+
+/* Right star position */
+.star-animation-right {
+  bottom: 0;
+  right: 0;
+  animation-delay: 1s; /* Slight delay for effect */
+}
+
+input[type="email"]:focus ~ .input-text,
+input[type="password"]:focus ~ .input-text {
+  @apply text-blue-500 bg-white transform -translate-y-6 -translate-x-6 scale-90;
+}
+
+input[type="email"].focus ~ .input-text,
+input[type="password"].focus ~ .input-text {
+  @apply text-blue-500 bg-white transform -translate-y-6 -translate-x-6 scale-90;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add more stars with unique sizes and positions if needed */
+
+
+
+
+

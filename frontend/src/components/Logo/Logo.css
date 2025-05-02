@@ -1,0 +1,167 @@
+/* Logo.css */
+
+/* Container to center the logo */
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px; /* Fixed height for the logo container */
+  width: 200px;  /* Fixed width for the logo container */
+  background-color: #ffffff; /* Dark background */
+  position: relative;
+  overflow: hidden; /* Prevents shine from spilling outside the container */
+  border-radius: 100%;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+   /* Ensures the logo container is circular */
+}
+  
+  /* This will animate the size of the logo */
+  .logo-svg-wrapper {
+    width: 100px;
+    height: 100px;
+    animation: grow 3s ease-out forwards;
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+  
+  /* Circle Border: Styling and animation */
+  .circle-border {
+    width: 180px;
+    height: 180px;
+    border: 3px solid black;
+    border-block-start-color: lightpink;
+    border-left-color: bisque;
+    border-right-color: bisque;
+    border-block-end-color: lightpink;
+    border-radius: 50%;
+    position: absolute;
+    animation: rotateCircle 3s ease-out infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    
+  }
+  
+  /* Flamingo Icon Rotation */
+  .flamingo-icon {
+    width: 100%;
+    height: 100%;
+    animation: rotateBird 3s ease-out forwards;
+  }
+  
+  /* Flamingo Text: Draw animation */
+  .flamingo-text {
+    font-size: 24px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: black;
+    opacity: 0;
+    animation: drawText 10s ease-out forwards;
+    margin-top: 0;  /* Remove any top margin */
+  line-height: 0.9
+  }
+
+  .flamingo-text1 {
+    font-size: 22px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: black;
+    opacity: 0;
+    animation: drawText 20s ease-out forwards;
+    margin-top: 0;  /* Remove any top margin */
+  line-height: 0.9
+  }
+
+  /* Shine effect */
+.shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 100%;
+  background: rgba(255,255,255,0.4);
+  animation: shine 3s infinite;
+  pointer-events: none; /* So the shine doesn't block interactions */
+  transform: skewX(-30deg);
+  left: -80px;/* Ensures the shine stays within the circular border */
+}
+
+
+
+/* src/Logo.css */
+
+/* Container for the logo */
+.logo-container1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px; /* Adjust based on your logo size */
+  width: 400px;  /* Adjust based on your logo size */
+  position: relative;
+  
+}
+
+/* Style the video */
+.logo-video {
+  width: 100%;   /* Makes the video fill the container */
+  height: 100%;  /* Makes the video fill the container */
+  object-fit: cover; /* Ensures the video covers the entire container */
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.5); /* Optional: makes it circular */
+}
+
+  
+  /* Animation Keyframes */
+  
+  /* 1. Grow animation for the logo */
+  @keyframes grow {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  /* 2. Rotate circle border */
+  @keyframes rotateCircle {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* 3. Rotate flamingo icon */
+  @keyframes rotateBird {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* 4. Draw text animation (stroke-dashoffset for text drawing) */
+  @keyframes drawText {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+/* Shine animation */
+@keyframes shine {
+  0%{
+    left: -80px;
+  }
+  100% {
+    left: 100%;
+  }
+}
