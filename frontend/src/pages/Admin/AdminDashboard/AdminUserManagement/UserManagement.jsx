@@ -11,6 +11,7 @@ const UserManagement = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [formData, setFormData] = useState({
+    userId: "",
     fullName: "",
     email: "",
     country: "",
@@ -29,8 +30,9 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      // const response = await axios.get("http://localhost:3000/api/users");
-      // setUsers(response.data);
+      const response = await axios.get("http://localhost:3000/api/user");
+      console.log(response)
+      setUsers(response.data.users);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error("Failed to load users");
@@ -65,7 +67,7 @@ const UserManagement = () => {
     setIsLoading(true);
     
     try {
-      await axios.post("http://localhost:3000/api/users", formData);
+      await axios.post("http://localhost:3000/api/user", formData);
       toast.success("User added successfully");
       resetForm();
       setShowForm(false);
@@ -83,7 +85,7 @@ const UserManagement = () => {
     setIsLoading(true);
     
     try {
-      await axios.put(`http://localhost:3000/api/users/${currentUser._id}`, formData);
+      await axios.put(`http://localhost:3000/api/user/${currentUser.userId}`, formData);
       toast.success("User updated successfully");
       resetForm();
       setShowForm(false);
@@ -100,7 +102,7 @@ const UserManagement = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       setIsLoading(true);
       try {
-        await axios.delete(`http://localhost:3000/api/users/${userId}`);
+        await axios.delete(`http://localhost:3000/api/user/${userId}`);
         toast.success("User deleted successfully");
         fetchUsers();
       } catch (error) {
@@ -327,7 +329,7 @@ const UserManagement = () => {
                           <FaEdit className="inline mr-1" /> Edit
                         </button>
                         <button 
-                          onClick={() => handleDeleteUser(user._id)}
+                          onClick={() => handleDeleteUser(user.userId)}
                           className="text-red-600 hover:text-red-900"
                         >
                           <FaTrash className="inline mr-1" /> Delete
