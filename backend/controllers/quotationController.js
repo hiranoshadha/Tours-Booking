@@ -19,7 +19,7 @@ const generateQuotationId = async () => {
 
 exports.createQuotation = async (req, res) => {
     try {
-        const { tour, vehicle, hotel, guide, groupQuantity, medicalNeeds, roomDescription, description } = req.body;
+        const { tour, vehicle, hotel, guide, groupQuantity, medicalNeeds, roomDescription, description, totalPrice } = req.body;
 
         console.log(req.body);
 
@@ -40,7 +40,8 @@ exports.createQuotation = async (req, res) => {
             groupQuantity,
             medicalNeeds: medicalNeeds || [],
             roomDescription,
-            description
+            description,
+            totalPrice
         });
 
         await newQuotation.save();

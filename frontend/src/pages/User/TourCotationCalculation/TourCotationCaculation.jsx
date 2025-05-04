@@ -16,6 +16,10 @@ const TourPackageQuotation = () => {
   const [quotationSummary, setQuotationSummary] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const pdfRef = useRef(null);
+  const [showQuotationsList, setShowQuotationsList] = useState(false);
+  const [quotations, setQuotations] = useState([]);
+  const [selectedQuotation, setSelectedQuotation] = useState(null);
+  const [showQuotationDetails, setShowQuotationDetails] = useState(false);
 
   // State variables to store data from API
   const [tours, setTours] = useState([]);
@@ -42,7 +46,34 @@ const TourPackageQuotation = () => {
 
   useEffect(() => {
     loadSelect();
+    fetchQuotations();
   }, []);
+
+  const fetchQuotations = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get("http://localhost:3000/api/quotation");
+      setQuotations(response.data.quotations || []);
+      console.log(response.data.quotations)
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+      toast.error("Failed to load quotations");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleViewQuotation = (quotation) => {
+    setSelectedQuotation(quotation);
+    setShowQuotationDetails(true);
+  };
+
+  const handleViewQuotations = () => {
+    setShowQuotationsList(true);
+    setShowMedicalSection(false);
+    setShowPreview(false);
+    fetchQuotations();
+  };
 
   const loadSelect = async () => {
     setIsLoading(true);
@@ -175,9 +206,9 @@ Guide Language: ${guideDetails?.language || 'English'}
 
 Group Size: ${groupQuantity} people
 
-Medical Considerations: ${medicalNeeds.length > 0 ? medicalNeeds.join(', ') : 'None'}
+Medical Considerations: ${medicalNeeds.length > 0 ? medicalNeeds.join(',') : 'None'}
 
-User Question About Tour : ${roomDescription || 'tour 50 word summery'}
+under the topic named Other Medical needs give details for : ${roomDescription || 'tour 50 word summery'}
 
 give me summery about my tour
 
@@ -199,10 +230,11 @@ when sending the response dont highlight the headings. also use bullet points in
         vehicle: vehicleDetails?.vehicleName,
         hotel: hotelDetails?.hotelName,
         guide: guideDetails?.name,
-        qty: groupQuantity,
+        groupQuantity,
         medicalNeeds,
         roomDescription,
-        description: apiResponse.text
+        description: apiResponse.text,
+        totalPrice
       });
 
       toast.success("Quotation created successfully!");
@@ -684,10 +716,19 @@ when sending the response dont highlight the headings. also use bullet points in
       )}
 
       {/* Create Tour Package Quotation */}
-      {!showMedicalSection && !showPreview && (
+      {!showMedicalSection && !showPreview && !showQuotationsList && (
         <section className="container mx-auto py-8" id="quotation">
           <h3 className="text-2xl font-semibold mb-6">Create Tour Package Quotation</h3>
           <div className="bg-white shadow-lg p-8 rounded-lg">
+            <div className="flex justify-end mb-4">
+              <button
+                type="button"
+                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                onClick={handleViewQuotations}
+              >
+                View Quotations
+              </button>
+            </div>
             <form>
               {/* Tour Package */}
               <div className="mb-4">
@@ -851,6 +892,165 @@ when sending the response dont highlight the headings. also use bullet points in
               </div>
             </form>
           </div>
+        </section>
+      )}
+
+      {/* Quotation Details Modal */}
+      {showQuotationDetails && selectedQuotation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full my-8 mx-auto">
+            <div className="p-6 max-h-[80vh] overflow-y-auto">
+              <div className="flex justify-between items-center border-b pb-4 mb-6 sticky top-0 bg-white">
+                <h3 className="text-2xl font-bold text-orange-600">Quotation Details</h3>
+                <button
+                  onClick={() => setShowQuotationDetails(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-lg font-semibold text-blue-700 mb-2">Tour Package</h4>
+                  <p className="text-gray-800">{selectedQuotation.tour}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-lg font-semibold text-blue-700 mb-2">Hotel</h4>
+                  <p className="text-gray-800">{selectedQuotation.hotel}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-lg font-semibold text-blue-700 mb-2">Vehicle</h4>
+                  <p className="text-gray-800">{selectedQuotation.vehicle}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-lg font-semibold text-blue-700 mb-2">Guide</h4>
+                  <p className="text-gray-800">{selectedQuotation.guide}</p>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg mb-6">
+                <div className="flex justify-between items-center">
+                  <h4 className="text-lg font-semibold text-blue-700">Group Size</h4>
+                  <p className="text-gray-800">{selectedQuotation.groupQuantity} people</p>
+                </div>
+                <div className="flex justify-between items-center mt-2 pt-2 border-t border-blue-100">
+                  <h4 className="text-lg font-semibold text-blue-700">Total Price</h4>
+                  <p className="text-xl font-bold text-blue-800">
+                    ${selectedQuotation.totalPrice ? selectedQuotation.totalPrice.toFixed(2) : "N/A"}
+                  </p>
+                </div>
+              </div>
+
+              {selectedQuotation.medicalNeeds && selectedQuotation.medicalNeeds.length > 0 && (
+                <div className="bg-yellow-50 p-4 rounded-lg mb-6">
+                  <h4 className="text-lg font-semibold text-yellow-700 mb-2">Medical Considerations</h4>
+                  <ul className="list-disc pl-5">
+                    {selectedQuotation.medicalNeeds.map((need, index) => (
+                      <li key={index} className="text-gray-700 mb-1">{need}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {selectedQuotation.description && (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-lg font-semibold text-gray-700 mb-2">Itinerary & Recommendations</h4>
+                  <div className="whitespace-pre-line text-gray-700">
+                    {selectedQuotation.description}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setShowQuotationDetails(false)}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-300"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quotations List Section */}
+      {showQuotationsList && (
+        <section className="container mx-auto py-8">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-semibold">All Quotations</h3>
+            <button
+              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-300"
+              onClick={() => setShowQuotationsList(false)}
+            >
+              Back to Form
+            </button>
+          </div>
+    
+          {isLoading ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600">Loading quotations...</p>
+            </div>
+          ) : quotations.length === 0 ? (
+            <div className="bg-white shadow-lg rounded-lg p-8 text-center">
+              <p className="text-gray-600">No quotations found.</p>
+            </div>
+          ) : (
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Quotation ID
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Tour
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Hotel
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Total Price
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {quotations.map((quotation) => (
+                      <tr key={quotation._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {quotation._id.substring(0, 8)}...
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {quotation.tour}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {quotation.hotel}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          ${quotation.totalPrice ? quotation.totalPrice.toFixed(2) : "N/A"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => handleViewQuotation(quotation)}
+                            className="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-full transition duration-300"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </section>
       )}
 

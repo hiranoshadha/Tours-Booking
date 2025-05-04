@@ -26,15 +26,17 @@ const quotationSchema = new mongoose.Schema({
         required: true,
     },
     medicalNeeds: {
-        type: [String],
-        required: true,
+        type: [String]
     },
     roomDescription: {
-        type: String,
-        required: true,
+        type: String
     },
     description: {
         type: String,
+        required: true,
+    },
+    totalPrice: {
+        type: Number,
         required: true,
     },
 });
