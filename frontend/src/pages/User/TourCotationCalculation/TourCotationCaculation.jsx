@@ -18,6 +18,7 @@ const TourPackageQuotation = () => {
   const pdfRef = useRef(null);
   const [showQuotationsList, setShowQuotationsList] = useState(false);
   const [quotations, setQuotations] = useState([]);
+  const [medicalConsideration, setMedicalConsideration] = useState([]);
   const [selectedQuotation, setSelectedQuotation] = useState(null);
   const [showQuotationDetails, setShowQuotationDetails] = useState(false);
 
@@ -47,6 +48,7 @@ const TourPackageQuotation = () => {
   useEffect(() => {
     loadSelect();
     fetchQuotations();
+    fetchMedicalConsideration();
   }, []);
 
   const fetchQuotations = async () => {
@@ -55,6 +57,21 @@ const TourPackageQuotation = () => {
       const response = await axios.get("http://localhost:3000/api/quotation");
       setQuotations(response.data.quotations || []);
       console.log(response.data.quotations)
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+      toast.error("Failed to load quotations");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchMedicalConsideration = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get("http://localhost:3000/api/medicalconsideration");
+      console.log(response.data.medicalConsideration)
+
+      setMedicalConsideration(response.data.medicalConsideration || []);
     } catch (error) {
       console.error("Error fetching quotations:", error);
       toast.error("Failed to load quotations");
@@ -582,20 +599,28 @@ when sending the response dont highlight the headings. also use bullet points in
 
   // Helper function to get medical considerations based on condition
   const getMedicalConsiderations = (condition) => {
-    const considerations = {
-      "Older than 65 years": "We'll ensure a comfortable pace, frequent rest stops, and accommodations with elevator access. Activities will be adjusted to moderate exertion levels.",
-      "With Arthritis": "We'll recommend accommodations with accessibility features, arrange for ground floor rooms when possible, and schedule activities with minimal walking on uneven terrain.",
-      "With Osteoporosis": "We'll ensure careful transportation arrangements, avoid rough terrain, and recommend gentle activities with minimal risk of falls.",
-      "Respiratory Disease": "We'll avoid high altitude locations, ensure air-conditioned transportation, and recommend accommodations with good ventilation and air quality.",
-      "Pregnancy": "We'll arrange for comfortable transportation with frequent stops, ensure accommodations near medical facilities, and recommend gentle activities.",
-      "Deep Vein Thrombosis": "We'll schedule regular stops during long journeys, recommend compression stockings, and ensure adequate hydration throughout the tour.",
-      "Heat and Cold Sensitivity": "We'll arrange climate-controlled transportation, recommend appropriate clothing, and schedule activities during comfortable temperature periods.",
-      "Hypertension/Heart Diseases": "We'll ensure a relaxed pace, avoid high altitude locations, and recommend accommodations near medical facilities.",
-      "High Altitude Sickness": "We'll arrange gradual acclimatization, ensure proper hydration, and avoid rapid ascents to high altitude locations.",
-      "Insect Born Disease Risks": "We'll recommend appropriate insect repellents, ensure accommodations with proper screening, and provide information on local disease risks."
-    };
 
-    return considerations[condition] || "Special considerations will be made for this condition.";
+    // const considerations = {
+    //   "Older than 65 years": "We'll ensure a comfortable pace, frequent rest stops, and accommodations with elevator access. Activities will be adjusted to moderate exertion levels.",
+    //   "With Arthritis": "We'll recommend accommodations with accessibility features, arrange for ground floor rooms when possible, and schedule activities with minimal walking on uneven terrain.",
+    //   "With Osteoporosis": "We'll ensure careful transportation arrangements, avoid rough terrain, and recommend gentle activities with minimal risk of falls.",
+    //   "Respiratory Disease": "We'll avoid high altitude locations, ensure air-conditioned transportation, and recommend accommodations with good ventilation and air quality.",
+    //   "Pregnancy": "We'll arrange for comfortable transportation with frequent stops, ensure accommodations near medical facilities, and recommend gentle activities.",
+    //   "Deep Vein Thrombosis": "We'll schedule regular stops during long journeys, recommend compression stockings, and ensure adequate hydration throughout the tour.",
+    //   "Heat and Cold Sensitivity": "We'll arrange climate-controlled transportation, recommend appropriate clothing, and schedule activities during comfortable temperature periods.",
+    //   "Hypertension/Heart Diseases": "We'll ensure a relaxed pace, avoid high altitude locations, and recommend accommodations near medical facilities.",
+    //   "High Altitude Sickness": "We'll arrange gradual acclimatization, ensure proper hydration, and avoid rapid ascents to high altitude locations.",
+    //   "Insect Born Disease Risks": "We'll recommend appropriate insect repellents, ensure accommodations with proper screening, and provide information on local disease risks."
+    // };
+    var mc;
+    console.log(medicalConsideration)
+    medicalConsideration.forEach((consideration) => {
+      if (consideration.name == condition) {
+        mc = consideration.description;
+      }
+    })
+    console.log(mc)
+    return mc || "Special considerations will be made for this condition.";
   };
 
 
@@ -989,7 +1014,7 @@ when sending the response dont highlight the headings. also use bullet points in
               Back to Form
             </button>
           </div>
-    
+
           {isLoading ? (
             <div className="text-center py-8">
               <p className="text-gray-600">Loading quotations...</p>

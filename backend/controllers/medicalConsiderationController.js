@@ -21,9 +21,7 @@ exports.getAllMedicalConsiderations = async (req, res) => {
 exports.getMedicalConsiderationByName = async (req, res) => {
     try {
         const { name } = req.params;
-        console.log(name)
         const medicalConsideration = await MedicalConsideration.findOne({ name });
-        console.log(medicalConsideration)
 
         if (!medicalConsideration) {
             return res.status(404).json({

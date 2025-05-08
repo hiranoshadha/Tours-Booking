@@ -4,6 +4,6 @@ const medicalConsideration = require("../controllers/medicalConsiderationControl
 const medicalConsiderationRouter = express.Router();
 
 medicalConsiderationRouter.get("/", medicalConsideration.getAllMedicalConsiderations);
-medicalConsiderationRouter.post("/name", medicalConsideration.getMedicalConsiderationByName);
+medicalConsiderationRouter.get("/name/:name", medicalConsideration.getMedicalConsiderationByName);
 
 module.exports = medicalConsiderationRouter;
