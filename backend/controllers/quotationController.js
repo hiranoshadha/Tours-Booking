@@ -21,8 +21,6 @@ exports.createQuotation = async (req, res) => {
     try {
         const { tour, vehicle, hotel, guide, groupQuantity, medicalNeeds, roomDescription, description, totalPrice } = req.body;
 
-        console.log(req.body);
-
         if (!tour || !vehicle || !hotel || !guide || !groupQuantity) {
             return res.status(400).json({
                 success: false,
